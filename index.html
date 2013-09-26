@@ -28,7 +28,8 @@ li {
   color: #000;
 }
 li span {
-padding-left: 10px;
+  padding-left: 10px;
+  cursor: default;
 }
 .checked{
   text-decoration: line-through;
@@ -39,48 +40,67 @@ padding-left: 10px;
 
 <body>
   <h1>To Do List</h1>
-      <input type="text" id="inItemText" placeholder="What do you need to do?"/>
+  <p><input type="text" id="inItemText" placeholder="What would you like to do?"/></p>
 
-    <ul id="todoList"></ul>
+  <ul id="todoList"></ul>
 
-  <script src="http://#ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script type="text/javascript">
-      function udpdateItemStatus() {
-      var cbId = this.id.replace("cb_", "");
-      var itemText = document.getElementById("item_" + cbId);
+  function udpdateItemStatus() {
+    var cbId = this.id.replace("cb_", "");
+    var itemText = document.getElementById("item_" + cbId);
 
-      if (this.checked) {
-        itemText.className = "checked";
-        } else {
-          itemText.className = "";
-        }
-      }
+    if (this.checked) {
+      itemText.className = "checked";
+    } else {
+      itemText.className = "";
+    }
+  }
 
-    function addNewItem(list, itemText) {
-      totalItems++;
+  function renameItem() {
+    var newText = prompt("Rename this item.");
 
-      var listItem = document.createElement("li");
-
-      var checkBox = document.createElement("input");
-      checkBox.type = "checkbox";
-      checkBox.id = "cb_" + totalItems;
-      checkBox.onclick = udpdateItemStatus;
-
-      var span = document.createElement("span");
-      span.id = "item_" + totalItems;
-      span.innerText = itemText;
-
-      listItem.appendChild(checkBox);
-      listItem.appendChild(span);
-
-      listItem.appendChild(listItem);
+    if (!newText || newText == "" || newText == " ") {
+      return false;
     }
 
-    var totalItems = 0;
-    var inItemText = document.getElementById("inItemText");
-    inItemText.focus();
-    inItemText.onkeyup = function(event) {
-      if (event.which == 13) {
+    this.innerText = newText;
+  }
+
+  function removeItem() {
+    this.style.display = "none";
+  }
+
+  function addNewItem(list, itemText) {
+
+    var date = new Date();
+    var id = "" + date.getHours() + date.getMinutes() + date.getSeconds() + date.getMilliseconds();
+
+    var listItem = document.createElement("li");
+    listItem.id = "li_" + id;
+    listItem.ondblclick = removeItem;
+
+    var checkBox = document.createElement("input");
+    checkBox.type = "checkbox";
+    checkBox.id = "cb_" + id;
+    checkBox.onclick = udpdateItemStatus;
+
+    var span = document.createElement("span");
+    span.id = "item_" + id;
+    span.innerText = itemText;
+    span.onclick = renameItem;
+
+    listItem.appendChild(checkBox);
+    listItem.appendChild(span);
+
+    list.appendChild(listItem);
+  }
+
+  var inItemText = document.getElementById("inItemText");
+  inItemText.focus();
+  inItemText.onkeyup = function(event) {
+
+    if (event.which == 13) {
       var itemText = inItemText.value;
 
       if (itemText == "" || itemText == " ") {
@@ -92,7 +112,7 @@ padding-left: 10px;
       inItemText.focus();
       inItemText.select();
     }
-};
+  };
   </script>
 </body>
 </html>
